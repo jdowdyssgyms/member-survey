@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Training Goals — Member Survey</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #1a1a18;
+    --ink-mid: #4a4a44;
+    --ink-light: #8a8a80;
+    --cream: #f7f5ef;
+    --cream-dark: #edeae0;
+    --accent: #b85c38;
+    --accent-light: #f0e4dc;
+    --border: #d8d4c8;
+    --success: #3a6b3a;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  .page-header {
+    background: var(--ink);
+    color: var(--cream);
+    padding: 3rem 2rem 2.5rem;
+    text-align: center;
+  }
+
+  .gym-name {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+
+  .page-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 400;
+    line-height: 1.15;
+    margin-bottom: 1rem;
+  }
+
+  .page-header p {
+    font-size: 15px;
+    color: #b0ad9f;
+    font-weight: 300;
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .progress-bar-wrap {
+    background: #2a2a26;
+    padding: 0.75rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .progress-track {
+    flex: 1;
+    height: 3px;
+    background: #3a3a36;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  .progress-text {
+    font-size: 12px;
+    color: #6a6a60;
+    white-space: nowrap;
+    font-weight: 500;
+  }
+
+  .survey-body {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 4rem;
+  }
+
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 2.5rem 0 1.25rem;
+  }
+
+  .section-divider span {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .section-divider::before, .section-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .q-block {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.75rem;
+    margin-bottom: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .q-block.focused {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-light);
+  }
+
+  .q-block.answered {
+    border-color: #c8d8c8;
+  }
+
+  .q-label-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 1.1rem;
+  }
+
+  .q-badge {
+    font-size: 10px;
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: 100px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+
+  .q-badge.standard { background: #e8e4d8; color: var(--ink-mid); }
+  .q-badge.breakthrough { background: var(--accent-light); color: var(--accent); }
+
+  .q-text {
+    font-size: 15.5px;
+    font-weight: 500;
+    line-height: 1.45;
+    color: var(--ink);
+  }
+
+  .q-hint {
+    font-size: 13px;
+    color: var(--ink-light);
+    margin-bottom: 1rem;
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  textarea {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14.5px;
+    color: var(--ink);
+    background: var(--cream);
+    resize: vertical;
+    min-height: 90px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    line-height: 1.6;
+  }
+
+  textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-light);
+    background: white;
+  }
+
+  .checkbox-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  @media (max-width: 480px) {
+    .checkbox-grid { grid-template-columns: 1fr; }
+  }
+
+  .check-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0.65rem 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: var(--cream);
+    user-select: none;
+  }
+
+  .check-option:hover { border-color: var(--accent); background: var(--accent-light); }
+  .check-option.selected { border-color: var(--accent); background: var(--accent-light); }
+
+  .check-option input { display: none; }
+
+  .check-box {
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    background: white;
+  }
+
+  .check-option.selected .check-box {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .check-mark {
+    display: none;
+    width: 10px;
+    height: 7px;
+  }
+
+  .check-mark path { stroke: white; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  .check-option.selected .check-mark { display: block; }
+
+  .check-label { font-size: 13.5px; color: var(--ink); line-height: 1.3; }
+
+  .radio-stack { display: flex; flex-direction: column; gap: 8px; }
+
+  .radio-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: var(--cream);
+    user-select: none;
+  }
+
+  .radio-option:hover { border-color: var(--accent); background: var(--accent-light); }
+  .radio-option.selected { border-color: var(--accent); background: var(--accent-light); }
+  .radio-option input { display: none; }
+
+  .radio-dot {
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid var(--border);
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+
+  .radio-option.selected .radio-dot {
+    border-color: var(--accent);
+    background: var(--accent);
+    box-shadow: inset 0 0 0 3px white;
+  }
+
+  .radio-label { font-size: 14px; color: var(--ink); }
+
+  .scale-wrap { margin-top: 0.25rem; }
+
+  .scale-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11.5px;
+    color: var(--ink-light);
+    margin-bottom: 0.5rem;
+  }
+
+  .scale-pips {
+    display: flex;
+    gap: 8px;
+  }
+
+  .scale-pip {
+    flex: 1;
+    aspect-ratio: 1;
+    max-width: 52px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    background: var(--cream);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink-mid);
+    transition: all 0.15s;
+    user-select: none;
+  }
+
+  .scale-pip:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+  .scale-pip.selected { border-color: var(--accent); background: var(--accent); color: white; }
+
+  .short-input {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14.5px;
+    color: var(--ink);
+    background: var(--cream);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .short-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-light);
+    background: white;
+  }
+
+  .optional-row {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--cream-dark);
+  }
+
+  .optional-label {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+
+  .submit-wrap {
+    margin-top: 2.5rem;
+    text-align: center;
+  }
+
+  .submit-btn {
+    background: var(--ink);
+    color: var(--cream);
+    border: none;
+    border-radius: 8px;
+    padding: 1rem 3rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    letter-spacing: 0.02em;
+  }
+
+  .submit-btn:hover { background: #2e2e28; }
+  .submit-btn:active { transform: scale(0.98); }
+  .submit-btn:disabled { background: var(--border); cursor: not-allowed; }
+
+  .submit-note {
+    font-size: 12px;
+    color: var(--ink-light);
+    margin-top: 0.75rem;
+  }
+
+  .success-screen {
+    display: none;
+    text-align: center;
+    padding: 4rem 2rem;
+  }
+
+  .success-icon {
+    width: 56px;
+    height: 56px;
+    background: var(--ink);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+  }
+
+  .success-screen h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 400;
+    margin-bottom: 0.75rem;
+  }
+
+  .success-screen p {
+    font-size: 15px;
+    color: var(--ink-mid);
+    max-width: 400px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .results-panel {
+    display: none;
+    margin-top: 2rem;
+    background: var(--cream-dark);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: left;
+  }
+
+  .results-panel h3 {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 1rem;
+    font-weight: 500;
+  }
+
+  .result-row {
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .result-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+  .result-q {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-mid);
+    margin-bottom: 4px;
+  }
+
+  .result-a { font-size: 14px; color: var(--ink); line-height: 1.5; }
+
+  .answered-check {
+    display: none;
+    width: 16px;
+    height: 16px;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+
+  .q-block.answered .answered-check { display: block; }
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <div class="gym-name">Starting Strength Boise</div>
+  <h1>What Are You<br>Training For?</h1>
+  <p>6 quick questions to help your coach understand what matters most to you — and build a plan around it.</p>
+</header>
+
+<div class="progress-bar-wrap" aria-label="Survey progress">
+  <div class="progress-track">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+  <div class="progress-text" id="progressText">0 of 6</div>
+</div>
+
+<div class="survey-body">
+  <form id="surveyForm" novalidate>
+
+    <!-- Name -->
+    <div class="q-block" id="block-qname">
+      <div class="q-label-row">
+        <span class="q-badge standard">Name</span>
+        <div class="q-text">What's your name?</div>
+      </div>
+      <input class="short-input" type="text" id="qname" name="qname" placeholder="Your full name…" oninput="handleTextInput(this, 'qname')">
+    </div>
+
+    <!-- Section 1 -->
+    <div class="section-divider"><span>What actually matters to you</span></div>
+
+    <!-- Q1 -->
+    <div class="q-block" id="block-q1">
+      <div class="q-label-row">
+        <span class="q-badge breakthrough">★ Key question</span>
+        <div class="q-text">Imagine it's a year from now and your training has gone really well. What's different about your life?</div>
+      </div>
+      <div class="q-hint">Think beyond the gym — energy, confidence, what you can do, how you feel.</div>
+      <textarea id="q1" name="q1" placeholder="A year from now I'd be able to..." rows="3" oninput="handleTextInput(this, 'q1')"></textarea>
+    </div>
+
+    <!-- Q2 -->
+    <div class="q-block" id="block-q2">
+      <div class="q-label-row">
+        <span class="q-badge standard">Q 2</span>
+        <div class="q-text">What does your goal look like? Pick all that apply.</div>
+      </div>
+      <div class="checkbox-grid" id="q2-grid">
+        <label class="check-option">
+          <input type="checkbox" name="q2" value="Hit a specific lift number">
+          <span class="check-box"><svg class="check-mark" viewBox="0 0 10 7"><path d="M1 3.5L3.5 6 9 1"/></svg></span>
+          <span class="check-label">Hit a specific lift number</span>
+        </label>
+        <label class="check-option">
+          <input type="checkbox" name="q2" value="Change how my body looks or feels">
+          <span class="check-box"><svg class="check-mark" viewBox="0 0 10 7"><path d="M1 3.5L3.5 6 9 1"/></svg></span>
+          <span class="check-label">Change how my body looks or feels</span>
+        </label>
+        <label class="check-option">
+          <input type="checkbox" name="q2" value="Lose or gain weight">
+          <span class="check-box"><svg class="check-mark" viewBox="0 0 10 7"><path d="M1 3.5L3.5 6 9 1"/></svg></span>
+          <span class="check-label">Lose or gain weight</span>
+        </label>
+        <label class="check-option">
+          <input type="checkbox" name="q2" value="Perform better at a sport or activity">
+          <span class="check-box"><svg class="check-mark" viewBox="0 0 10 7"><path d="M1 3.5L3.5 6 9 1"/></svg></span>
+          <span class="check-label">Perform better at a sport or activity</span>
+        </label>
+        <label class="check-option">
+          <input type="checkbox" name="q2" value="Move better or hurt less">
+          <span class="check-box"><svg class="check-mark" viewBox="0 0 10 7"><path d="M1 3.5L3.5 6 9 1"/></svg></span>
+          <span class="check-label">Move better / hurt less</span>
+        </label>
+        <label class="check-option">
+          <input type="checkbox" name="q2" value="Build a consistent habit">
+          <span class="check-box"><svg class="check-mark" viewBox="0 0 10 7"><path d="M1 3.5L3.5 6 9 1"/></svg></span>
+          <span class="check-label">Build a consistent habit</span>
+        </label>
+        <label class="check-option">
+          <input type="checkbox" name="q2" value="Compete in powerlifting or a meet">
+          <span class="check-box"><svg class="check-mark" viewBox="0 0 10 7"><path d="M1 3.5L3.5 6 9 1"/></svg></span>
+          <span class="check-label">Compete in a meet</span>
+        </label>
+        <label class="check-option">
+          <input type="checkbox" name="q2" value="Just enjoy training">
+          <span class="check-box"><svg class="check-mark" viewBox="0 0 10 7"><path d="M1 3.5L3.5 6 9 1"/></svg></span>
+          <span class="check-label">Just enjoy training</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="q-block" id="block-q3">
+      <div class="q-label-row">
+        <span class="q-badge breakthrough">★ Key question</span>
+        <div class="q-text">Is there a specific number attached to any of your goals?</div>
+      </div>
+      <div class="q-hint">A target lift, body composition — anything concrete. It's okay if you don't have one yet.</div>
+      <input class="short-input" type="text" id="q3" name="q3" placeholder="e.g. deadlift 300 lbs, lose 20 lbs, squat bodyweight…" oninput="handleTextInput(this, 'q3')">
+    </div>
+
+    <!-- Section 2 -->
+    <div class="section-divider"><span>Timeline and commitment</span></div>
+
+    <!-- Q4 -->
+    <div class="q-block" id="block-q4">
+      <div class="q-label-row">
+        <span class="q-badge standard">Q 4</span>
+        <div class="q-text">How urgent does this goal feel to you right now?</div>
+      </div>
+      <div class="scale-wrap">
+        <div class="scale-labels"><span>No rush</span><span>Very urgent</span></div>
+        <div class="scale-pips" id="q4-scale">
+          <div class="scale-pip" onclick="selectScale(this, 'q4', 1)">1</div>
+          <div class="scale-pip" onclick="selectScale(this, 'q4', 2)">2</div>
+          <div class="scale-pip" onclick="selectScale(this, 'q4', 3)">3</div>
+          <div class="scale-pip" onclick="selectScale(this, 'q4', 4)">4</div>
+          <div class="scale-pip" onclick="selectScale(this, 'q4', 5)">5</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 4 -->
+    <div class="section-divider"><span>Honesty check</span></div>
+
+    <!-- Q7 -->
+    <div class="q-block" id="block-q7">
+      <div class="q-label-row">
+        <span class="q-badge breakthrough">★ Key question</span>
+        <div class="q-text">What's one thing outside the gym that you think is working against your progress?</div>
+      </div>
+      <div class="q-hint">Sleep, stress, diet, schedule — anything real. This stays between you and your coach.</div>
+      <textarea id="q7" name="q7" placeholder="Honestly, the thing that gets in the way most is…" rows="3" oninput="handleTextInput(this, 'q7')"></textarea>
+      <div class="optional-row">
+        <div class="optional-label">Optional — anything else?</div>
+        <input class="short-input" type="text" id="q7b" name="q7b" placeholder="Anything else you want your coach to know…" style="margin-top:0;">
+      </div>
+    </div>
+
+    <div class="submit-wrap">
+      <button type="submit" class="submit-btn" id="submitBtn">Submit my goals</button>
+      <div class="submit-note">Your answers go directly to your coaching team.</div>
+    </div>
+
+  </form>
+
+  <!-- Success screen -->
+  <div class="success-screen" id="successScreen">
+    <div class="success-icon">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M5 12L10 17L19 8" stroke="#f7f5ef" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <h2>Your goals are in.</h2>
+    <p>Your coach will review these before your next session and build your program around what you told us.</p>
+    <div class="results-panel" id="resultsPanel">
+      <h3>Your responses</h3>
+      <div id="resultsList"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const answers = {
+    qname: '', q1: '', q2: [], q3: '', q4: null, q7: '', q7b: ''
+  };
+
+  const questionLabels = {
+    qname: 'Name',
+    q1: 'A year from now, what\'s different?',
+    q2: 'Goal types',
+    q3: 'Specific number or target',
+    q4: 'Urgency (1–5)',
+    q7: 'What\'s working against you',
+    q7b: 'Anything else'
+  };
+
+  function updateProgress() {
+    let answered = 0;
+    if (answers.qname.trim().length > 0) answered++;
+    if (answers.q1.trim().length > 5) answered++;
+    if (answers.q2.length > 0) answered++;
+    if (answers.q3.trim().length > 0) answered++;
+    if (answers.q4 !== null) answered++;
+    if (answers.q7.trim().length > 5) answered++;
+    document.getElementById('progressFill').style.width = (answered / 6 * 100) + '%';
+    document.getElementById('progressText').textContent = answered + ' of 6';
+  }
+
+  function handleTextInput(el, key) {
+    answers[key] = el.value;
+    const block = document.getElementById('block-' + key);
+    if (el.value.trim().length > 0) block.classList.add('answered');
+    else block.classList.remove('answered');
+    updateProgress();
+  }
+
+  // Checkbox handling for Q2 — uses change event to avoid double-toggle from label+input click
+  document.querySelectorAll('#q2-grid input[type="checkbox"]').forEach(input => {
+    input.addEventListener('change', () => {
+      const label = input.closest('.check-option');
+      if (input.checked) label.classList.add('selected');
+      else label.classList.remove('selected');
+      answers.q2 = Array.from(document.querySelectorAll('input[name="q2"]:checked')).map(i => i.value);
+      const block = document.getElementById('block-q2');
+      if (answers.q2.length > 0) block.classList.add('answered');
+      else block.classList.remove('answered');
+      updateProgress();
+    });
+  });
+
+  function selectScale(pip, key, val) {
+    answers[key] = val;
+    document.querySelectorAll('#' + key + '-scale .scale-pip').forEach(p => p.classList.remove('selected'));
+    pip.classList.add('selected');
+    document.getElementById('block-' + key).classList.add('answered');
+    updateProgress();
+  }
+
+  function selectRadio(label, key, val) {
+    answers[key] = val;
+    document.querySelectorAll('#' + key + '-radio .radio-option').forEach(l => l.classList.remove('selected'));
+    label.classList.add('selected');
+    document.getElementById('block-' + key).classList.add('answered');
+    updateProgress();
+  }
+
+  // Focus state for text blocks
+  document.querySelectorAll('textarea, input[type="text"]').forEach(el => {
+    el.addEventListener('focus', () => {
+      const block = el.closest('.q-block');
+      if (block) block.classList.add('focused');
+    });
+    el.addEventListener('blur', () => {
+      const block = el.closest('.q-block');
+      if (block) block.classList.remove('focused');
+    });
+  });
+
+  document.getElementById('surveyForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    answers.q7b = document.getElementById('q7b').value;
+
+    // Build results list
+    const list = document.getElementById('resultsList');
+    list.innerHTML = '';
+    Object.entries(questionLabels).forEach(([key, label]) => {
+      const val = answers[key];
+      let display = '';
+      if (Array.isArray(val)) display = val.length ? val.join(', ') : '—';
+      else if (val === null || val === '') display = '—';
+      else display = val;
+      if (display === '—' && (key === 'q7b')) return;
+      list.innerHTML += `<div class="result-row"><div class="result-q">${label}</div><div class="result-a">${display}</div></div>`;
+    });
+
+    document.getElementById('surveyForm').style.display = 'none';
+    const success = document.getElementById('successScreen');
+    success.style.display = 'block';
+    document.getElementById('resultsPanel').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
+</body>
+</html>
