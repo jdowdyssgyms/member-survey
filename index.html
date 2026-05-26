@@ -2,771 +2,842 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Your Training Goals — Member Survey</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --ink: #1a1a18;
-    --ink-mid: #4a4a44;
-    --ink-light: #8a8a80;
-    --cream: #f7f5ef;
-    --cream-dark: #edeae0;
-    --accent: #b85c38;
-    --accent-light: #f0e4dc;
-    --border: #d8d4c8;
-    --success: #3a6b3a;
-  }
-
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--cream);
-    color: var(--ink);
-    min-height: 100vh;
-    padding: 0;
-  }
-
-  .page-header {
-    background: var(--ink);
-    color: var(--cream);
-    padding: 3rem 2rem 2.5rem;
-    text-align: center;
-  }
-
-  .gym-name {
-    font-size: 11px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--accent);
-    font-weight: 500;
-    margin-bottom: 1rem;
-  }
-
-  .page-header h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(2rem, 5vw, 3.2rem);
-    font-weight: 400;
-    line-height: 1.15;
-    margin-bottom: 1rem;
-  }
-
-  .page-header p {
-    font-size: 15px;
-    color: #b0ad9f;
-    font-weight: 300;
-    max-width: 480px;
-    margin: 0 auto;
-    line-height: 1.6;
-  }
-
-  .progress-bar-wrap {
-    background: #2a2a26;
-    padding: 0.75rem 2rem;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-
-  .progress-track {
-    flex: 1;
-    height: 3px;
-    background: #3a3a36;
-    border-radius: 2px;
-    overflow: hidden;
-  }
-
-  .progress-fill {
-    height: 100%;
-    background: var(--accent);
-    border-radius: 2px;
-    transition: width 0.4s ease;
-    width: 0%;
-  }
-
-  .progress-text {
-    font-size: 12px;
-    color: #6a6a60;
-    white-space: nowrap;
-    font-weight: 500;
-  }
-
-  .survey-body {
-    max-width: 680px;
-    margin: 0 auto;
-    padding: 2.5rem 1.5rem 4rem;
-  }
-
-  .section-divider {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin: 2.5rem 0 1.25rem;
-  }
-
-  .section-divider span {
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--ink-light);
-    font-weight: 500;
-    white-space: nowrap;
-  }
-
-  .section-divider::before, .section-divider::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
-
-  .q-block {
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.75rem;
-    margin-bottom: 1rem;
-    transition: border-color 0.2s, box-shadow 0.2s;
-  }
-
-  .q-block.focused {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-light);
-  }
-
-  .q-block.answered {
-    border-color: #c8d8c8;
-  }
-
-  .q-label-row {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    margin-bottom: 1.1rem;
-  }
-
-  .q-badge {
-    font-size: 10px;
-    font-weight: 500;
-    padding: 3px 8px;
-    border-radius: 100px;
-    white-space: nowrap;
-    flex-shrink: 0;
-    margin-top: 3px;
-  }
-
-  .q-badge.standard { background: #e8e4d8; color: var(--ink-mid); }
-  .q-badge.breakthrough { background: var(--accent-light); color: var(--accent); }
-
-  .q-text {
-    font-size: 15.5px;
-    font-weight: 500;
-    line-height: 1.45;
-    color: var(--ink);
-  }
-
-  .q-hint {
-    font-size: 13px;
-    color: var(--ink-light);
-    margin-bottom: 1rem;
-    font-style: italic;
-    line-height: 1.5;
-  }
-
-  textarea {
-    width: 100%;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 0.75rem 1rem;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14.5px;
-    color: var(--ink);
-    background: var(--cream);
-    resize: vertical;
-    min-height: 90px;
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    line-height: 1.6;
-  }
-
-  textarea:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-light);
-    background: white;
-  }
-
-  .checkbox-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-  }
-
-  @media (max-width: 480px) {
-    .checkbox-grid { grid-template-columns: 1fr; }
-  }
-
-  .check-option {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 0.65rem 0.9rem;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.15s;
-    background: var(--cream);
-    user-select: none;
-  }
-
-  .check-option:hover { border-color: var(--accent); background: var(--accent-light); }
-  .check-option.selected { border-color: var(--accent); background: var(--accent-light); }
-
-  .check-option input { display: none; }
-
-  .check-box {
-    width: 18px;
-    height: 18px;
-    border: 1.5px solid var(--border);
-    border-radius: 4px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.15s;
-    background: white;
-  }
-
-  .check-option.selected .check-box {
-    background: var(--accent);
-    border-color: var(--accent);
-  }
-
-  .check-mark {
-    display: none;
-    width: 10px;
-    height: 7px;
-  }
-
-  .check-mark path { stroke: white; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
-  .check-option.selected .check-mark { display: block; }
-
-  .check-label { font-size: 13.5px; color: var(--ink); line-height: 1.3; }
-
-  .radio-stack { display: flex; flex-direction: column; gap: 8px; }
-
-  .radio-option {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 0.75rem 1rem;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.15s;
-    background: var(--cream);
-    user-select: none;
-  }
-
-  .radio-option:hover { border-color: var(--accent); background: var(--accent-light); }
-  .radio-option.selected { border-color: var(--accent); background: var(--accent-light); }
-  .radio-option input { display: none; }
-
-  .radio-dot {
-    width: 18px;
-    height: 18px;
-    border: 1.5px solid var(--border);
-    border-radius: 50%;
-    flex-shrink: 0;
-    background: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.15s;
-  }
-
-  .radio-option.selected .radio-dot {
-    border-color: var(--accent);
-    background: var(--accent);
-    box-shadow: inset 0 0 0 3px white;
-  }
-
-  .radio-label { font-size: 14px; color: var(--ink); }
-
-  .scale-wrap { margin-top: 0.25rem; }
-
-  .scale-labels {
-    display: flex;
-    justify-content: space-between;
-    font-size: 11.5px;
-    color: var(--ink-light);
-    margin-bottom: 0.5rem;
-  }
-
-  .scale-pips {
-    display: flex;
-    gap: 8px;
-  }
-
-  .scale-pip {
-    flex: 1;
-    aspect-ratio: 1;
-    max-width: 52px;
-    border: 1.5px solid var(--border);
-    border-radius: 8px;
-    background: var(--cream);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--ink-mid);
-    transition: all 0.15s;
-    user-select: none;
-  }
-
-  .scale-pip:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
-  .scale-pip.selected { border-color: var(--accent); background: var(--accent); color: white; }
-
-  .short-input {
-    width: 100%;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 0.75rem 1rem;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14.5px;
-    color: var(--ink);
-    background: var(--cream);
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-  }
-
-  .short-input:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-light);
-    background: white;
-  }
-
-  .optional-row {
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--cream-dark);
-  }
-
-  .optional-label {
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--ink-light);
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-  }
-
-  .submit-wrap {
-    margin-top: 2.5rem;
-    text-align: center;
-  }
-
-  .submit-btn {
-    background: var(--ink);
-    color: var(--cream);
-    border: none;
-    border-radius: 8px;
-    padding: 1rem 3rem;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.1s;
-    letter-spacing: 0.02em;
-  }
-
-  .submit-btn:hover { background: #2e2e28; }
-  .submit-btn:active { transform: scale(0.98); }
-  .submit-btn:disabled { background: var(--border); cursor: not-allowed; }
-
-  .submit-note {
-    font-size: 12px;
-    color: var(--ink-light);
-    margin-top: 0.75rem;
-  }
-
-  .success-screen {
-    display: none;
-    text-align: center;
-    padding: 4rem 2rem;
-  }
-
-  .success-icon {
-    width: 56px;
-    height: 56px;
-    background: var(--ink);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 1.5rem;
-  }
-
-  .success-screen h2 {
-    font-family: 'Playfair Display', serif;
-    font-size: 2rem;
-    font-weight: 400;
-    margin-bottom: 0.75rem;
-  }
-
-  .success-screen p {
-    font-size: 15px;
-    color: var(--ink-mid);
-    max-width: 400px;
-    margin: 0 auto;
-    line-height: 1.6;
-  }
-
-  .results-panel {
-    display: none;
-    margin-top: 2rem;
-    background: var(--cream-dark);
-    border-radius: 12px;
-    padding: 1.5rem;
-    text-align: left;
-  }
-
-  .results-panel h3 {
-    font-size: 11px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--ink-light);
-    margin-bottom: 1rem;
-    font-weight: 500;
-  }
-
-  .result-row {
-    margin-bottom: 1rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .result-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-
-  .result-q {
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--ink-mid);
-    margin-bottom: 4px;
-  }
-
-  .result-a { font-size: 14px; color: var(--ink); line-height: 1.5; }
-
-  .answered-check {
-    display: none;
-    width: 16px;
-    height: 16px;
-    margin-left: auto;
-    flex-shrink: 0;
-  }
-
-  .q-block.answered .answered-check { display: block; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink: #1a1a18;
+  --ink-mid: #4a4a44;
+  --ink-light: #8a8a80;
+  --cream: #f7f5ef;
+  --cream-dark: #edeae0;
+  --accent: #b85c38;
+  --accent-light: #f0e4dc;
+  --border: #d8d4c8;
+  --success: #3a6b3a;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+}
+
+/* Progress bar */
+#progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 3px;
+  z-index: 200;
+  background: rgba(0,0,0,0.08);
+}
+#progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 0 2px 2px 0;
+  transition: width 0.5s ease;
+  width: 0%;
+}
+
+/* Slide viewport */
+#slide-viewport {
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Slide wrapper — animates in/out */
+.slide-wrap {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(2rem, 6vw, 4rem) clamp(1.25rem, 5vw, 3rem);
+  overflow-y: auto;
+}
+
+.slide-wrap.slide-dark { background: var(--ink); }
+.slide-wrap.slide-light { background: var(--cream); }
+
+/* Inner content */
+.slide-inner {
+  width: 100%;
+  max-width: 560px;
+}
+
+/* Back / counter chrome */
+#back-btn {
+  position: fixed;
+  top: 12px; left: 1.25rem;
+  z-index: 300;
+  background: rgba(247,245,239,0.85);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 5px 12px 5px 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12.5px;
+  color: var(--ink-mid);
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  gap: 5px;
+  backdrop-filter: blur(4px);
+  min-height: 32px;
+}
+#back-btn:hover { background: white; }
+
+#q-counter {
+  position: fixed;
+  top: 16px; right: 1.25rem;
+  z-index: 300;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-light);
+  display: none;
+}
+
+/* Welcome */
+.welcome-gym {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+}
+.welcome-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.4rem, 7vw, 4rem);
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--cream);
+  margin-bottom: 1.25rem;
+}
+.welcome-desc {
+  font-size: 15px;
+  color: #b0ad9f;
+  font-weight: 300;
+  line-height: 1.65;
+  max-width: 400px;
+  margin-bottom: 2.5rem;
+}
+.welcome-desc strong { color: #d8d4c8; font-weight: 400; }
+
+/* Question layout */
+.q-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 1rem;
+}
+.q-badge {
+  font-size: 10px;
+  font-weight: 500;
+  padding: 3px 9px;
+  border-radius: 100px;
+  white-space: nowrap;
+}
+.q-badge.standard { background: #e8e4d8; color: var(--ink-mid); }
+.q-badge.key { background: var(--accent-light); color: var(--accent); }
+
+.q-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.35rem, 3.5vw, 1.85rem);
+  font-weight: 400;
+  line-height: 1.3;
+  color: var(--ink);
+  margin-bottom: 0.5rem;
+}
+.q-hint {
+  font-size: 13.5px;
+  color: var(--ink-light);
+  font-style: italic;
+  line-height: 1.55;
+  margin-bottom: 1.4rem;
+}
+
+/* Text inputs */
+.tf-input {
+  width: 100%;
+  border: none;
+  border-bottom: 2px solid var(--border);
+  padding: 0.6rem 0;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  color: var(--ink);
+  background: transparent;
+  outline: none;
+  transition: border-color 0.2s;
+  display: block;
+}
+.tf-input:focus { border-color: var(--accent); }
+
+.tf-textarea {
+  width: 100%;
+  border: none;
+  border-bottom: 2px solid var(--border);
+  padding: 0.6rem 0;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  color: var(--ink);
+  background: transparent;
+  outline: none;
+  transition: border-color 0.2s;
+  resize: none;
+  min-height: 80px;
+  line-height: 1.6;
+  display: block;
+  overflow: hidden;
+}
+.tf-textarea:focus { border-color: var(--accent); }
+
+.enter-hint {
+  font-size: 12px;
+  color: var(--ink-light);
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.enter-hint kbd {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  background: var(--cream-dark);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2px 6px;
+  color: var(--ink-mid);
+}
+
+/* Optional sub-field */
+.sub-field {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--cream-dark);
+}
+.sub-label {
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-light);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+/* Checkbox grid */
+.choice-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 0.5rem;
+}
+@media (max-width: 480px) { .choice-grid { grid-template-columns: 1fr; } }
+
+.choice-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0.8rem 1rem;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: left;
+  min-height: 44px;
+  width: 100%;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--ink);
+  user-select: none;
+}
+.choice-btn:hover { border-color: var(--accent); background: var(--accent-light); }
+.choice-btn.selected { border-color: var(--accent); background: var(--accent-light); }
+
+.choice-letter {
+  font-size: 11px;
+  font-weight: 600;
+  width: 22px; height: 22px;
+  border-radius: 5px;
+  border: 1.5px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  color: var(--ink-mid);
+  background: var(--cream-dark);
+  transition: all 0.15s;
+}
+.choice-btn.selected .choice-letter {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+.choice-text { font-size: 14px; line-height: 1.35; }
+
+/* Scale */
+.scale-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11.5px;
+  color: var(--ink-light);
+  margin-bottom: 0.75rem;
+}
+.scale-pips { display: flex; gap: 8px; }
+.scale-pip {
+  flex: 1;
+  aspect-ratio: 1;
+  max-width: 60px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  background: white;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 500;
+  color: var(--ink-mid);
+  transition: all 0.15s;
+  min-height: 44px;
+  font-family: 'DM Sans', sans-serif;
+}
+.scale-pip:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+.scale-pip.selected { border-color: var(--accent); background: var(--accent); color: white; }
+
+/* Buttons */
+.cta-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 1.75rem;
+  flex-wrap: wrap;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--ink);
+  color: var(--cream);
+  border: none;
+  border-radius: 8px;
+  padding: 0.85rem 1.75rem;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  min-height: 44px;
+}
+.btn-primary:hover { background: #2e2e28; }
+.btn-primary:active { transform: scale(0.97); }
+.btn-primary:disabled { background: var(--border); cursor: not-allowed; }
+.btn-primary.on-dark { background: var(--cream); color: var(--ink); }
+.btn-primary.on-dark:hover { background: #ece9e2; }
+
+.btn-skip {
+  background: none;
+  border: none;
+  color: var(--ink-light);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0.5rem 0;
+  min-height: 44px;
+  transition: color 0.15s;
+}
+.btn-skip:hover { color: var(--ink); }
+
+/* Success */
+.success-icon {
+  width: 60px; height: 60px;
+  background: var(--ink);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 1.5rem;
+}
+.success-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.8rem, 5vw, 2.5rem);
+  font-weight: 400;
+  margin-bottom: 0.75rem;
+}
+.success-desc {
+  font-size: 15px;
+  color: var(--ink-mid);
+  line-height: 1.65;
+  max-width: 400px;
+  margin-bottom: 2rem;
+}
+.results-panel {
+  background: var(--cream-dark);
+  border-radius: 14px;
+  padding: 1.5rem;
+  width: 100%;
+}
+.results-panel h3 {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-light);
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+.result-row {
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+.result-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.result-q { font-size: 11.5px; font-weight: 500; color: var(--ink-mid); margin-bottom: 3px; }
+.result-a { font-size: 14px; color: var(--ink); line-height: 1.5; }
+
+/* Transition animation classes */
+.slide-wrap.enter-from-below {
+  animation: slideUpIn 0.48s cubic-bezier(.4,0,.2,1) forwards;
+}
+.slide-wrap.enter-from-above {
+  animation: slideDownIn 0.48s cubic-bezier(.4,0,.2,1) forwards;
+}
+.slide-wrap.exit-to-above {
+  animation: slideUpOut 0.48s cubic-bezier(.4,0,.2,1) forwards;
+}
+.slide-wrap.exit-to-below {
+  animation: slideDownOut 0.48s cubic-bezier(.4,0,.2,1) forwards;
+}
+
+@keyframes slideUpIn {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+@keyframes slideDownIn {
+  from { transform: translateY(-100%); }
+  to   { transform: translateY(0); }
+}
+@keyframes slideUpOut {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-100%); }
+}
+@keyframes slideDownOut {
+  from { transform: translateY(0); }
+  to   { transform: translateY(100%); }
+}
 </style>
 </head>
 <body>
 
-<header class="page-header">
-  <div class="gym-name">Starting Strength Boise</div>
-  <h1>What Are You<br>Training For?</h1>
-  <p>6 quick questions to help your coach understand what matters most to you — and build a plan around it.</p>
-</header>
+<div id="progress-bar"><div id="progress-fill"></div></div>
 
-<div class="progress-bar-wrap" aria-label="Survey progress">
-  <div class="progress-track">
-    <div class="progress-fill" id="progressFill"></div>
-  </div>
-  <div class="progress-text" id="progressText">0 of 6</div>
-</div>
+<button id="back-btn" onclick="goBack()">
+  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7L9 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  Back
+</button>
 
-<div class="survey-body">
-  <form id="surveyForm" novalidate>
+<div id="q-counter"></div>
 
-    <!-- Name -->
-    <div class="q-block" id="block-qname">
-      <div class="q-label-row">
-        <span class="q-badge standard">Name</span>
-        <div class="q-text">What's your name?</div>
-      </div>
-      <input class="short-input" type="text" id="qname" name="qname" placeholder="Your full name…" oninput="handleTextInput(this, 'qname')">
-    </div>
-
-    <!-- Section 1 -->
-    <div class="section-divider"><span>What actually matters to you</span></div>
-
-    <!-- Q1 -->
-    <div class="q-block" id="block-q1">
-      <div class="q-label-row">
-        <span class="q-badge breakthrough">★ Key question</span>
-        <div class="q-text">Imagine it's six months from now and your training has gone really well. What's different about your life?</div>
-      </div>
-      <div class="q-hint">Think beyond the gym — energy, confidence, what you can do, how you feel.</div>
-      <textarea id="q1" name="q1" placeholder="Six months from now I'd be able to..." rows="3" oninput="handleTextInput(this, 'q1')"></textarea>
-    </div>
-
-    <!-- Q2 -->
-    <div class="q-block" id="block-q2">
-      <div class="q-label-row">
-        <span class="q-badge standard">Q 2</span>
-        <div class="q-text">What does your goal look like? Pick all that apply.</div>
-      </div>
-      <div class="checkbox-grid" id="q2-grid">
-        <label class="check-option">
-          <input type="checkbox" name="q2" value="Hit a specific lift number">
-          <span class="check-box"><svg class="check-mark" viewBox="0 0 10 7"><path d="M1 3.5L3.5 6 9 1"/></svg></span>
-          <span class="check-label">Hit a specific lift number</span>
-        </label>
-        <label class="check-option">
-          <input type="checkbox" name="q2" value="Improve body composition">
-          <span class="check-box"><svg class="check-mark" viewBox="0 0 10 7"><path d="M1 3.5L3.5 6 9 1"/></svg></span>
-          <span class="check-label">Improve body composition</span>
-        </label>
-        <label class="check-option">
-          <input type="checkbox" name="q2" value="Perform better at a sport or activity">
-          <span class="check-box"><svg class="check-mark" viewBox="0 0 10 7"><path d="M1 3.5L3.5 6 9 1"/></svg></span>
-          <span class="check-label">Perform better at a sport or activity</span>
-        </label>
-        <label class="check-option">
-          <input type="checkbox" name="q2" value="Hurt less">
-          <span class="check-box"><svg class="check-mark" viewBox="0 0 10 7"><path d="M1 3.5L3.5 6 9 1"/></svg></span>
-          <span class="check-label">Hurt less</span>
-        </label>
-        <label class="check-option">
-          <input type="checkbox" name="q2" value="Build a consistent habit">
-          <span class="check-box"><svg class="check-mark" viewBox="0 0 10 7"><path d="M1 3.5L3.5 6 9 1"/></svg></span>
-          <span class="check-label">Build a consistent habit</span>
-        </label>
-        <label class="check-option">
-          <input type="checkbox" name="q2" value="Compete in powerlifting or a meet">
-          <span class="check-box"><svg class="check-mark" viewBox="0 0 10 7"><path d="M1 3.5L3.5 6 9 1"/></svg></span>
-          <span class="check-label">Compete in a meet</span>
-        </label>
-        <label class="check-option">
-          <input type="checkbox" name="q2" value="Just enjoy training">
-          <span class="check-box"><svg class="check-mark" viewBox="0 0 10 7"><path d="M1 3.5L3.5 6 9 1"/></svg></span>
-          <span class="check-label">Just enjoy training</span>
-        </label>
-      </div>
-    </div>
-
-    <!-- Q3 -->
-    <div class="q-block" id="block-q3">
-      <div class="q-label-row">
-        <span class="q-badge breakthrough">★ Key question</span>
-        <div class="q-text">Is there a specific number attached to any of your goals?</div>
-      </div>
-      <div class="q-hint">A target lift, body composition — anything concrete. It's okay if you don't have one yet.</div>
-      <input class="short-input" type="text" id="q3" name="q3" placeholder="e.g. deadlift 300 lbs, squat bodyweight, increase bone density..." oninput="handleTextInput(this, 'q3')">
-    </div>
-
-    <!-- Section 2 -->
-    <div class="section-divider"><span>Timeline and commitment</span></div>
-
-    <!-- Q4 -->
-    <div class="q-block" id="block-q4">
-      <div class="q-label-row">
-        <span class="q-badge standard">Q 4</span>
-        <div class="q-text">How urgent does this goal feel to you right now?</div>
-      </div>
-      <div class="scale-wrap">
-        <div class="scale-labels"><span>No rush</span><span>Very urgent</span></div>
-        <div class="scale-pips" id="q4-scale">
-          <div class="scale-pip" onclick="selectScale(this, 'q4', 1)">1</div>
-          <div class="scale-pip" onclick="selectScale(this, 'q4', 2)">2</div>
-          <div class="scale-pip" onclick="selectScale(this, 'q4', 3)">3</div>
-          <div class="scale-pip" onclick="selectScale(this, 'q4', 4)">4</div>
-          <div class="scale-pip" onclick="selectScale(this, 'q4', 5)">5</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Section 4 -->
-    <div class="section-divider"><span>Honesty check</span></div>
-
-    <!-- Q7 -->
-    <div class="q-block" id="block-q7">
-      <div class="q-label-row">
-        <span class="q-badge breakthrough">★ Key question</span>
-        <div class="q-text">What's one thing outside the gym you could change to accelerate your progress?</div>
-      </div>
-      <div class="q-hint">Sleep, stress, diet, schedule, pain — anything interfering with progress.</div>
-      <textarea id="q7" name="q7" placeholder="Honestly, the thing that gets in the way most is…" rows="3" oninput="handleTextInput(this, 'q7')"></textarea>
-      <div class="optional-row">
-        <div class="optional-label">Optional — anything else?</div>
-        <input class="short-input" type="text" id="q7b" name="q7b" placeholder="Anything else you want your coach to know…" style="margin-top:0;">
-      </div>
-    </div>
-
-    <div class="submit-wrap">
-      <button type="submit" class="submit-btn" id="submitBtn">Submit my goals</button>
-      <div class="submit-note">Your answers go directly to your coaching team.</div>
-    </div>
-
-  </form>
-
-  <!-- Success screen -->
-  <div class="success-screen" id="successScreen">
-    <div class="success-icon">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <path d="M5 12L10 17L19 8" stroke="#f7f5ef" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </div>
-    <h2>Your goals are in.</h2>
-    <p>Your coach will review these before your next session and build your program around what you told us.</p>
-    <div class="results-panel" id="resultsPanel">
-      <h3>Your responses</h3>
-      <div id="resultsList"></div>
-    </div>
-  </div>
-</div>
+<div id="slide-viewport"></div>
 
 <script>
-  const answers = {
-    qname: '', q1: '', q2: [], q3: '', q4: null, q7: '', q7b: ''
-  };
-
-  const questionLabels = {
-    qname: 'Name',
-    q1: 'A year from now, what\'s different?',
-    q2: 'Goal types',
-    q3: 'Specific number or target',
-    q4: 'Urgency (1–5)',
-    q7: 'What\'s working against you',
-    q7b: 'Anything else'
-  };
-
-  function updateProgress() {
-    let answered = 0;
-    if (answers.qname.trim().length > 0) answered++;
-    if (answers.q1.trim().length > 5) answered++;
-    if (answers.q2.length > 0) answered++;
-    if (answers.q3.trim().length > 0) answered++;
-    if (answers.q4 !== null) answered++;
-    if (answers.q7.trim().length > 5) answered++;
-    document.getElementById('progressFill').style.width = (answered / 6 * 100) + '%';
-    document.getElementById('progressText').textContent = answered + ' of 6';
-  }
-
-  function handleTextInput(el, key) {
-    answers[key] = el.value;
-    const block = document.getElementById('block-' + key);
-    if (el.value.trim().length > 0) block.classList.add('answered');
-    else block.classList.remove('answered');
-    updateProgress();
-  }
-
-  // Checkbox handling for Q2 — uses change event to avoid double-toggle from label+input click
-  document.querySelectorAll('#q2-grid input[type="checkbox"]').forEach(input => {
-    input.addEventListener('change', () => {
-      const label = input.closest('.check-option');
-      if (input.checked) label.classList.add('selected');
-      else label.classList.remove('selected');
-      answers.q2 = Array.from(document.querySelectorAll('input[name="q2"]:checked')).map(i => i.value);
-      const block = document.getElementById('block-q2');
-      if (answers.q2.length > 0) block.classList.add('answered');
-      else block.classList.remove('answered');
-      updateProgress();
-    });
-  });
-
-  function selectScale(pip, key, val) {
-    answers[key] = val;
-    document.querySelectorAll('#' + key + '-scale .scale-pip').forEach(p => p.classList.remove('selected'));
-    pip.classList.add('selected');
-    document.getElementById('block-' + key).classList.add('answered');
-    updateProgress();
-  }
-
-  function selectRadio(label, key, val) {
-    answers[key] = val;
-    document.querySelectorAll('#' + key + '-radio .radio-option').forEach(l => l.classList.remove('selected'));
-    label.classList.add('selected');
-    document.getElementById('block-' + key).classList.add('answered');
-    updateProgress();
-  }
-
-  // Focus state for text blocks
-  document.querySelectorAll('textarea, input[type="text"]').forEach(el => {
-    el.addEventListener('focus', () => {
-      const block = el.closest('.q-block');
-      if (block) block.classList.add('focused');
-    });
-    el.addEventListener('blur', () => {
-      const block = el.closest('.q-block');
-      if (block) block.classList.remove('focused');
-    });
-  });
-
-  document.getElementById('surveyForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    answers.q7b = document.getElementById('q7b').value;
-
-    // Disable button while submitting
-    const btn = document.getElementById('submitBtn');
-    btn.disabled = true;
-    btn.textContent = 'Sending…';
-
-    // Send to Formspree
-    try {
-      const formData = new FormData();
-      formData.append('Name', answers.qname);
-      formData.append('A year from now, what\'s different?', answers.q1);
-      formData.append('Goal types', answers.q2.length ? answers.q2.join(', ') : '—');
-      formData.append('Specific number or target', answers.q3 || '—');
-      formData.append('Urgency (1–5)', answers.q4 !== null ? answers.q4 : '—');
-      formData.append('What\'s working against you', answers.q7 || '—');
-      formData.append('Anything else', answers.q7b || '—');
+// ── State ──────────────────────────────────────────────
+const answers = { qname:'', q1:'', q2:[], q3:'', q4:null, q7:'', q7b:'' };
 
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxRsKkCpFk1ReXEV6o6ynPKcabqiMDCN3Y-0zTgBFaPmQ9RgoSmsePWsWKeLvg2o_M/exec";
 
-await fetch(APPS_SCRIPT_URL, {
-  method: 'POST',
-  mode: 'no-cors',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    name:         answers.qname,
-    yearFromNow:  answers.q1,
-    goalTypes:    answers.q2.length ? answers.q2.join(', ') : '—',
-    target:       answers.q3 || '—',
-    urgency:      answers.q4 !== null ? String(answers.q4) : '—',
-    obstacles:    answers.q7 || '—',
-    anythingElse: answers.q7b || '—'
-  })
+const questionLabels = {
+  qname: 'Name',
+  q1: "Six months from now, what's different?",
+  q2: 'Goal types',
+  q3: 'Specific number or target',
+  q4: 'Urgency (1–5)',
+  q7: "What's working against you",
+  q7b: 'Anything else'
+};
+
+let currentIndex = 0;
+let isAnimating = false;
+
+// ── Slide definitions ──────────────────────────────────
+function slides() {
+  return [
+    // 0 — Welcome
+    () => `
+      <div class="slide-wrap slide-dark enter-from-below" id="active-slide">
+        <div class="slide-inner">
+          <div class="welcome-gym">Starting Strength Boise</div>
+          <h1 class="welcome-title">What Are You<br>Training For?</h1>
+          <p class="welcome-desc"><strong>6 quick questions</strong> to help your coach understand what matters most to you — and build a plan around it.</p>
+          <div class="cta-row">
+            <button class="btn-primary on-dark" onclick="goNext()">
+              Start
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7H11M7 3L11 7L7 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <span style="font-size:12px;color:#7a7a6a">Takes ~2 minutes</span>
+          </div>
+        </div>
+      </div>`,
+
+    // 1 — Name
+    () => `
+      <div class="slide-wrap slide-light enter-from-below" id="active-slide">
+        <div class="slide-inner">
+          <div class="q-meta"><span class="q-badge standard">Name</span></div>
+          <h2 class="q-title">What's your name?</h2>
+          <input class="tf-input" type="text" id="qname" name="qname" placeholder="Your full name…" autocomplete="name" value="${esc(answers.qname)}">
+          <div class="enter-hint"><kbd>Enter ↵</kbd> to continue</div>
+          <div class="cta-row">
+            <button class="btn-primary" onclick="advanceIfValid()">
+              OK
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7H11M7 3L11 7L7 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>`,
+
+    // 2 — Q1
+    () => `
+      <div class="slide-wrap slide-light enter-from-below" id="active-slide">
+        <div class="slide-inner">
+          <div class="q-meta"><span class="q-badge key">★ Key question</span></div>
+          <h2 class="q-title">Imagine it's six months from now and training has gone really well. What's different about your life?</h2>
+          <p class="q-hint">Think beyond the gym — energy, confidence, what you can do, how you feel.</p>
+          <textarea class="tf-textarea" id="q1" name="q1" placeholder="Six months from now I'd be able to…" rows="3">${esc(answers.q1)}</textarea>
+          <div class="enter-hint"><kbd>Shift ↵</kbd> new line &nbsp;·&nbsp; <kbd>Enter ↵</kbd> continue</div>
+          <div class="cta-row">
+            <button class="btn-primary" onclick="advanceIfValid()">
+              Next
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7H11M7 3L11 7L7 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>`,
+
+    // 3 — Q2 multi-select
+    () => {
+      const opts = [
+        ['A','Hit a specific lift number'],
+        ['B','Improve body composition'],
+        ['C','Perform better at a sport or activity'],
+        ['D','Hurt less'],
+        ['E','Build a consistent habit'],
+        ['F','Compete in a meet'],
+        ['G','Just enjoy training'],
+      ];
+      const btns = opts.map(([letter, label]) => {
+        const sel = answers.q2.includes(label) ? 'selected' : '';
+        return `<button class="choice-btn ${sel}" data-value="${label}" onclick="toggleCheck(this)">
+          <span class="choice-letter">${sel ? '✓' : letter}</span>
+          <span class="choice-text">${label}</span>
+        </button>`;
+      }).join('');
+      return `
+      <div class="slide-wrap slide-light enter-from-below" id="active-slide">
+        <div class="slide-inner">
+          <div class="q-meta"><span class="q-badge standard">Q 2</span><span style="font-size:12px;color:var(--ink-light)">2 / 6</span></div>
+          <h2 class="q-title">What does your goal look like?</h2>
+          <p class="q-hint">Pick all that apply.</p>
+          <div class="choice-grid">${btns}</div>
+          <div class="cta-row">
+            <button class="btn-primary" onclick="advanceIfValid()">
+              Next
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7H11M7 3L11 7L7 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>`;
+    },
+
+    // 4 — Q3 specific number
+    () => `
+      <div class="slide-wrap slide-light enter-from-below" id="active-slide">
+        <div class="slide-inner">
+          <div class="q-meta"><span class="q-badge key">★ Key question</span><span style="font-size:12px;color:var(--ink-light)">3 / 6</span></div>
+          <h2 class="q-title">Is there a specific number attached to any of your goals?</h2>
+          <p class="q-hint">A target lift, body composition — anything concrete. It's okay if you don't have one yet.</p>
+          <input class="tf-input" type="text" id="q3" name="q3" placeholder="e.g. deadlift 300 lbs, squat bodyweight…" value="${esc(answers.q3)}">
+          <div class="enter-hint"><kbd>Enter ↵</kbd> to continue &nbsp;·&nbsp; or skip</div>
+          <div class="cta-row">
+            <button class="btn-primary" onclick="goNext()">
+              Next
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7H11M7 3L11 7L7 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>`,
+
+    // 5 — Q4 urgency scale
+    () => {
+      const pips = [1,2,3,4,5].map(n => {
+        const sel = answers.q4 === n ? 'selected' : '';
+        return `<button class="scale-pip ${sel}" onclick="selectScale(this, ${n})">${n}</button>`;
+      }).join('');
+      return `
+      <div class="slide-wrap slide-light enter-from-below" id="active-slide">
+        <div class="slide-inner">
+          <div class="q-meta"><span class="q-badge standard">Q 4</span><span style="font-size:12px;color:var(--ink-light)">4 / 6</span></div>
+          <h2 class="q-title">How urgent does this goal feel to you right now?</h2>
+          <div class="scale-labels"><span>No rush</span><span>Very urgent</span></div>
+          <div class="scale-pips">${pips}</div>
+        </div>
+      </div>`;
+    },
+
+    // 6 — Q7 outside gym
+    () => `
+      <div class="slide-wrap slide-light enter-from-below" id="active-slide">
+        <div class="slide-inner">
+          <div class="q-meta"><span class="q-badge key">★ Key question</span><span style="font-size:12px;color:var(--ink-light)">6 / 6</span></div>
+          <h2 class="q-title">What's one thing outside the gym you could change to accelerate your progress?</h2>
+          <p class="q-hint">Sleep, stress, diet, schedule, pain — anything interfering with progress.</p>
+          <textarea class="tf-textarea" id="q7" name="q7" placeholder="Honestly, the thing that gets in the way most is…" rows="3">${esc(answers.q7)}</textarea>
+          <div class="sub-field">
+            <div class="sub-label">Optional — anything else?</div>
+            <input class="tf-input" type="text" id="q7b" name="q7b" placeholder="Anything else you want your coach to know…" value="${esc(answers.q7b)}">
+          </div>
+          <div class="cta-row" style="margin-top:1.75rem">
+            <button class="btn-primary" id="submitBtn" onclick="submitSurvey()">
+              Submit my goals
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7H11M7 3L11 7L7 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+          <p style="font-size:12px;color:var(--ink-light);margin-top:1rem;">Your answers go directly to your coaching team.</p>
+        </div>
+      </div>`,
+
+    // 8 — Success
+    () => {
+      const rows = Object.entries(questionLabels).map(([key, label]) => {
+        const val = answers[key];
+        let display = Array.isArray(val) ? (val.length ? val.join(', ') : '—') : (val || '—');
+        if (display === '—' && key === 'q7b') return '';
+        return `<div class="result-row"><div class="result-q">${label}</div><div class="result-a">${esc(display)}</div></div>`;
+      }).join('');
+      return `
+      <div class="slide-wrap slide-light enter-from-below" id="active-slide">
+        <div class="slide-inner" style="text-align:center;align-items:center;display:flex;flex-direction:column">
+          <div class="success-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M5 12L10 17L19 8" stroke="#f7f5ef" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h2 class="success-title">Your goals are in.</h2>
+          <p class="success-desc">Your coach will review these before your next session and build your program around what you told us.</p>
+          <div class="results-panel">
+            <h3>Your responses</h3>
+            ${rows}
+          </div>
+        </div>
+      </div>`;
+    },
+  ];
+}
+
+const SLIDE_COUNT = 8;
+
+function esc(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Render & navigate ──────────────────────────────────
+function render(index, direction) {
+  const viewport = document.getElementById('slide-viewport');
+  const defs = slides();
+  const oldSlide = document.getElementById('active-slide');
+
+  // Render new slide off-screen
+  const temp = document.createElement('div');
+  temp.innerHTML = defs[index]();
+  const newSlide = temp.firstElementChild;
+
+  // Set incoming animation class
+  newSlide.classList.remove('enter-from-below');
+  newSlide.classList.add(direction === 'forward' ? 'enter-from-below' : 'enter-from-above');
+
+  if (oldSlide) {
+    // Animate old slide out
+    const exitClass = direction === 'forward' ? 'exit-to-above' : 'exit-to-below';
+    oldSlide.classList.add(exitClass);
+    oldSlide.addEventListener('animationend', () => oldSlide.remove(), { once: true });
+  }
+
+  viewport.appendChild(newSlide);
+
+  // Wire up live input listeners
+  wireInputs(newSlide);
+
+  // Focus first input
+  setTimeout(() => {
+    const input = newSlide.querySelector('input, textarea');
+    if (input) input.focus();
+  }, 200);
+
+  currentIndex = index;
+  updateChrome();
+}
+
+function wireInputs(slide) {
+  const qname = slide.querySelector('#qname');
+  if (qname) {
+    qname.addEventListener('input', e => { answers.qname = e.target.value; updateChrome(); });
+    qname.addEventListener('keydown', onEnterAdvance);
+  }
+
+  const q1 = slide.querySelector('#q1');
+  if (q1) {
+    q1.addEventListener('input', e => { answers.q1 = e.target.value; autoResize(e.target); });
+    q1.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); advanceIfValid(); } });
+  }
+
+  const q3 = slide.querySelector('#q3');
+  if (q3) {
+    q3.addEventListener('input', e => { answers.q3 = e.target.value; });
+    q3.addEventListener('keydown', onEnterNext);
+  }
+
+  const q7 = slide.querySelector('#q7');
+  if (q7) {
+    q7.addEventListener('input', e => { answers.q7 = e.target.value; autoResize(e.target); });
+    q7.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submitSurvey(); } });
+  }
+
+  const q7b = slide.querySelector('#q7b');
+  if (q7b) {
+    q7b.addEventListener('input', e => { answers.q7b = e.target.value; });
+    q7b.addEventListener('keydown', onEnterAdvance);
+  }
+}
+
+function onEnterAdvance(e) { if (e.key === 'Enter') { e.preventDefault(); advanceIfValid(); } }
+function onEnterNext(e) { if (e.key === 'Enter') { e.preventDefault(); goNext(); } }
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = el.scrollHeight + 'px';
+}
+
+// ── Advance logic ──────────────────────────────────────
+function goNext() {
+  if (currentIndex < SLIDE_COUNT - 1) render(currentIndex + 1, 'forward');
+}
+
+function goBack() {
+  if (currentIndex > 0) render(currentIndex - 1, 'backward');
+}
+
+function advanceIfValid() {
+  if (isValid()) goNext();
+  else flashInvalid();
+}
+
+function isValid() {
+  switch(currentIndex) {
+    case 1: return answers.qname.trim().length > 0;
+    case 2: return answers.q1.trim().length > 2;
+    case 3: return answers.q2.length > 0;
+    case 6: return answers.q7.trim().length > 2;
+    default: return true;
+  }
+}
+
+function flashInvalid() {
+  const input = document.querySelector('#active-slide .tf-input, #active-slide .tf-textarea');
+  if (!input) return;
+  input.focus();
+  input.animate([
+    { transform: 'translateX(0)' },
+    { transform: 'translateX(-6px)' },
+    { transform: 'translateX(6px)' },
+    { transform: 'translateX(0)' }
+  ], { duration: 250, easing: 'ease-in-out' });
+}
+
+// ── Choice handlers ────────────────────────────────────
+function toggleCheck(btn) {
+  btn.classList.toggle('selected');
+  const letter = btn.querySelector('.choice-letter');
+  const val = btn.dataset.value;
+  if (btn.classList.contains('selected')) {
+    if (!answers.q2.includes(val)) answers.q2.push(val);
+    letter.textContent = '✓';
+  } else {
+    answers.q2 = answers.q2.filter(v => v !== val);
+    // restore original letter
+    const opts = ['Hit a specific lift number','Improve body composition','Perform better at a sport or activity','Hurt less','Build a consistent habit','Compete in a meet','Just enjoy training'];
+    const letters = 'ABCDEFG';
+    const idx = opts.indexOf(val);
+    letter.textContent = idx >= 0 ? letters[idx] : '?';
+  }
+  updateChrome();
+}
+
+function selectScale(btn, val) {
+  answers.q4 = val;
+  document.querySelectorAll('#active-slide .scale-pip').forEach(p => p.classList.remove('selected'));
+  btn.classList.add('selected');
+  updateChrome();
+  setTimeout(() => goNext(), 350);
+}
+
+// ── Chrome updates ─────────────────────────────────────
+function updateChrome() {
+  // Progress
+  let n = 0;
+  if (answers.qname.trim()) n++;
+  if (answers.q1.trim().length > 2) n++;
+  if (answers.q2.length > 0) n++;
+  if (answers.q3.trim()) n++;
+  if (answers.q4 !== null) n++;
+  if (answers.q7.trim().length > 2) n++;
+  document.getElementById('progress-fill').style.width = (n / 6 * 100) + '%';
+
+  // Back button
+  const backBtn = document.getElementById('back-btn');
+  backBtn.style.display = (currentIndex > 0 && currentIndex < 7) ? 'flex' : 'none';
+
+  // Counter
+  const counter = document.getElementById('q-counter');
+  if (currentIndex >= 1 && currentIndex <= 6) {
+    counter.textContent = currentIndex + ' / 6';
+    counter.style.display = 'block';
+  } else {
+    counter.style.display = 'none';
+  }
+}
+
+// ── Keyboard ───────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') goBack();
 });
-     
-    } catch (err) {
-      // Silently continue — don't block the user from seeing the success screen
-      console.error('Formspree error:', err);
-    }
 
-    // Build results list
-    const list = document.getElementById('resultsList');
-    list.innerHTML = '';
-    Object.entries(questionLabels).forEach(([key, label]) => {
-      const val = answers[key];
-      let display = '';
-      if (Array.isArray(val)) display = val.length ? val.join(', ') : '—';
-      else if (val === null || val === '') display = '—';
-      else display = val;
-      if (display === '—' && (key === 'q7b')) return;
-      list.innerHTML += `<div class="result-row"><div class="result-q">${label}</div><div class="result-a">${display}</div></div>`;
+// ── Submission ─────────────────────────────────────────
+async function submitSurvey() {
+  const btn = document.getElementById('submitBtn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+
+  try {
+    await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name:         answers.qname,
+        yearFromNow:  answers.q1,
+        goalTypes:    answers.q2.length ? answers.q2.join(', ') : '—',
+        target:       answers.q3 || '—',
+        urgency:      answers.q4 !== null ? String(answers.q4) : '—',
+        obstacles:    answers.q7 || '—',
+        anythingElse: answers.q7b || '—'
+      })
     });
+  } catch(err) { console.error(err); }
 
-    document.getElementById('surveyForm').style.display = 'none';
-    const success = document.getElementById('successScreen');
-    success.style.display = 'block';
-    document.getElementById('resultsPanel').style.display = 'block';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
+  render(7, 'forward');
+}
+
+// ── Init ───────────────────────────────────────────────
+render(0, 'forward');
 </script>
 </body>
 </html>
